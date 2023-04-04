@@ -72,8 +72,11 @@ public class AirportRepository {
     }
 
     public String bookATicket(Integer flightId, Integer passengerId){
-        int maxCapacity=flightDB.get(flightId).getMaxCapacity();
-        List<Integer> passengers =bookedTickedDB.get(flightId);
+        int maxCapacity=0;
+        if(flightDB.containsKey(flightId)){
+            maxCapacity=flightDB.get(flightId).getMaxCapacity();
+        }
+        List<Integer> passengers=bookedTickedDB.get(flightId);
         if(bookedTickedDB.get(flightId) == null){
             passengers=new ArrayList<>();
         }
@@ -91,15 +94,18 @@ public class AirportRepository {
     }
 
     public int getNumberOfPeopleOn(Date date, String airportName){
-        Airport airport=airportDB.get(airportName);
-        City fromCity=airport.getCity();
         int ans=0;
-        for(Map.Entry<Integer,Flight> entry:flightDB.entrySet()){
-            if(entry.getValue()!=null && entry.getValue().getFromCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
-                if(bookedTickedDB.get(entry.getKey())!=null) ans+=bookedTickedDB.get(entry.getKey()).size();
-            }
-            if(entry.getValue().getToCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
-                if(bookedTickedDB.get(entry.getKey())!=null) ans+=bookedTickedDB.get(entry.getKey()).size();
+        if(airportDB.containsKey(airportName)){
+            Airport airport=airportDB.get(airportName);
+            City fromCity=airport.getCity();
+            ans=0;
+            for(Map.Entry<Integer,Flight> entry:flightDB.entrySet()){
+                if(entry.getValue()!=null && entry.getValue().getFromCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
+                    if(bookedTickedDB.get(entry.getKey())!=null) ans+=bookedTickedDB.get(entry.getKey()).size();
+                }
+                if(entry.getValue().getToCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
+                    if(bookedTickedDB.get(entry.getKey())!=null) ans+=bookedTickedDB.get(entry.getKey()).size();
+                }
             }
         }
         return ans;
@@ -107,10 +113,7 @@ public class AirportRepository {
 
     public int calculateFlightFare(Integer flightId){
         int noOfPeopleWhoHaveAlreadyBooked =0;
-        if(bookedTickedDB.get(flightId) == null){
-            noOfPeopleWhoHaveAlreadyBooked=0;
-        }
-        else{
+        if(bookedTickedDB.get(flightId) != null){
             noOfPeopleWhoHaveAlreadyBooked = bookedTickedDB.get(flightId).size();
         }
         int price= 3000 + (noOfPeopleWhoHaveAlreadyBooked*50);
@@ -119,7 +122,7 @@ public class AirportRepository {
 
     public String cancelATicket(Integer flightId, Integer passengerId){
         if(flightDB.containsKey(flightId)) {
-            if(bookedTickedDB.get(flightId).contains(passengerId)){
+            if(bookedTickedDB.containsKey(flightId) && bookedTickedDB.get(flightId)!=null && bookedTickedDB.get(flightId).contains(passengerId)){
                 bookedTickedDB.get(flightId).remove(passengerId);
                 return "SUCCESS";
             }
@@ -138,8 +141,10 @@ public class AirportRepository {
     }
 
     public int calculateRevenueOfAFlight(Integer flightId){
-
-        int totalPassengersBooked=bookedTickedDB.get(flightId).size();
+        int totalPassengersBooked = 0;
+        if(bookedTickedDB.get(flightId)!=null){
+            totalPassengersBooked=bookedTickedDB.get(flightId).size();
+        }
         int revenue =0;
         for(int i=0;i<totalPassengersBooked;i++){
             revenue+=50*(60+i);
