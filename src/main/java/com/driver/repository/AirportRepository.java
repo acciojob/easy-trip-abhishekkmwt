@@ -95,11 +95,11 @@ public class AirportRepository {
         City fromCity=airport.getCity();
         int ans=0;
         for(Map.Entry<Integer,Flight> entry:flightDB.entrySet()){
-            if(entry.getValue().getFromCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
-                ans+=bookedTickedDB.get(entry.getKey()).size();
+            if(entry.getValue()!=null && entry.getValue().getFromCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
+                if(bookedTickedDB.get(entry.getKey())!=null) ans+=bookedTickedDB.get(entry.getKey()).size();
             }
             if(entry.getValue().getToCity().equals(fromCity) && entry.getValue().getFlightDate()==date){
-                ans+=bookedTickedDB.get(entry.getKey()).size();
+                if(bookedTickedDB.get(entry.getKey())!=null) ans+=bookedTickedDB.get(entry.getKey()).size();
             }
         }
         return ans;
@@ -130,7 +130,7 @@ public class AirportRepository {
     public int countOfBookingsDoneByPassengerAllCombined(Integer passengerId){
          int count=0;
          for(Map.Entry<Integer,List<Integer>> entry : bookedTickedDB.entrySet()){
-             if(entry.getValue().contains(passengerId)){
+             if(entry.getValue()!=null && entry.getValue().contains(passengerId)){
                  count++;
              }
          }
