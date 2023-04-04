@@ -156,11 +156,11 @@ public class AirportRepository {
     }
 
     public int calculateRevenueOfAFlight(int flightId){
-        int revenue =0;
+        int revenue =3000;
         if(bookedTickedDB.containsKey(flightId)){
             if(bookedTickedDB.get(flightId)!=null){
                 int totalPassengersBooked=bookedTickedDB.get(flightId).size();
-                for(int i=0;i<=totalPassengersBooked;i++){
+                for(int i=1;i<=totalPassengersBooked;i++){
                     revenue+=50*(60+i);
                 }
             }
