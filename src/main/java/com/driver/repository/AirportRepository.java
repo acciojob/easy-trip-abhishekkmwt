@@ -106,7 +106,13 @@ public class AirportRepository {
     }
 
     public int calculateFlightFare(Integer flightId){
-        int noOfPeopleWhoHaveAlreadyBooked = bookedTickedDB.get(flightId).size();
+        int noOfPeopleWhoHaveAlreadyBooked =0;
+        if(bookedTickedDB.get(flightId) == null){
+            noOfPeopleWhoHaveAlreadyBooked=0;
+        }
+        else{
+            noOfPeopleWhoHaveAlreadyBooked = bookedTickedDB.get(flightId).size();
+        }
         int price= 3000 + (noOfPeopleWhoHaveAlreadyBooked*50);
         return price;
     }
