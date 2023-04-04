@@ -32,7 +32,7 @@ public class AirportService {
         return airportRepository.getShortestDurationOfPossibleBetweenTwoCities(fromCity,toCity);
     }
 
-    public String bookATicket(Integer flightId, Integer passengerId){
+    public String bookATicket(int flightId, int passengerId){
         return airportRepository.bookATicket(flightId,passengerId);
     }
 
@@ -40,15 +40,15 @@ public class AirportService {
         return airportRepository.getNumberOfPeopleOn(date,airportName);
     }
 
-    public int calculateFlightFare(Integer flightId){
+    public int calculateFlightFare(int flightId){
         return airportRepository.calculateFlightFare(flightId);
     }
 
-    public String cancelATicket(Integer flightId, Integer passengerId){
+    public String cancelATicket(int flightId, int passengerId){
         return airportRepository.cancelATicket(flightId,passengerId);
     }
 
-    public int countOfBookingsDoneByPassengerAllCombined(Integer passengerId){
+    public int countOfBookingsDoneByPassengerAllCombined(int passengerId){
         return airportRepository.countOfBookingsDoneByPassengerAllCombined(passengerId);
     }
 
@@ -56,7 +56,7 @@ public class AirportService {
         return airportRepository.calculateRevenueOfAFlight(flightId);
     }
 
-    public String getAirportNameFromFlightId(Integer flightId){
+    public String getAirportNameFromFlightId(int flightId){
         return airportRepository.getAirportNameFromFlightId(flightId);
     }
 }

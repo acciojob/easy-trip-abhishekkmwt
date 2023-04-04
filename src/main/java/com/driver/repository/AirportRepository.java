@@ -15,11 +15,14 @@ public class AirportRepository {
     private HashMap<Integer, Passenger> passengerDB;
     private HashMap<Integer,List<Integer>> bookedTickedDB;
 
+    private HashMap<Integer,Integer> flightPassPairDb;
+
     public AirportRepository() {
         this.airportDB = new HashMap<>();
         this.passengerDB=new HashMap<>();
         this.flightDB=new HashMap<>();
         this.bookedTickedDB=new HashMap<>();
+        this.flightPassPairDb=new HashMap<>();
     }
 
     public void addAirport(Airport airport){
@@ -71,23 +74,33 @@ public class AirportRepository {
         return mini;
     }
 
-    public String bookATicket(Integer flightId, Integer passengerId){
+    public String bookATicket(int flightId, int passengerId){
         if(flightDB.containsKey(flightId)){
             int maxCapacity=flightDB.get(flightId).getMaxCapacity();
-            List<Integer> passengers=bookedTickedDB.get(flightId);
-            if(bookedTickedDB.get(flightId) == null){
-                passengers=new ArrayList<>();
-            }
-            if(bookedTickedDB.get(flightId).size() < maxCapacity){
-                if(bookedTickedDB.get(flightId).contains(passengerId)){
-                    return "FAILURE";
+            List<Integer> passenger=null;
+            if(bookedTickedDB.containsKey(flightId)) {
+                List<Integer> passengers = bookedTickedDB.get(flightId);
+
+                if (bookedTickedDB.get(flightId) == null) {
+                    passengers = new ArrayList<>();
                 }
-                else{
-                    passengers.add(passengerId);
+                if(bookedTickedDB.get(flightId).size() < maxCapacity) {
+
+                    if (bookedTickedDB.get(flightId).contains(passengerId)) {
+                        return "FAILURE";
+                    }
+                    else {
+                        passengers.add(passengerId);
+                    }
+
+                    bookedTickedDB.put(flightId,passengers);
+                    return "SUCCESS";
                 }
-                bookedTickedDB.put(flightId,passengers);
-                return "SUCCESS";
             }
+            passenger=new ArrayList<>();
+            passenger.add(passengerId);
+            bookedTickedDB.put(flightId,passenger);
+            return "SUCCESS";
         }
         return "FAILURE";
     }
@@ -110,7 +123,7 @@ public class AirportRepository {
         return ans;
     }
 
-    public int calculateFlightFare(Integer flightId){
+    public int calculateFlightFare(int flightId){
         int price=0;
         if(bookedTickedDB.containsKey(flightId)){
             int noOfPeopleWhoHaveAlreadyBooked =0;
@@ -122,7 +135,7 @@ public class AirportRepository {
         return price;
     }
 
-    public String cancelATicket(Integer flightId, Integer passengerId){
+    public String cancelATicket(int flightId, int passengerId){
         if(bookedTickedDB.containsKey(flightId)) {
             if(bookedTickedDB.get(flightId)!=null && bookedTickedDB.get(flightId).contains(passengerId)){
                 bookedTickedDB.get(flightId).remove(passengerId);
@@ -132,7 +145,7 @@ public class AirportRepository {
         return "FAILURE";
     }
 
-    public int countOfBookingsDoneByPassengerAllCombined(Integer passengerId){
+    public int countOfBookingsDoneByPassengerAllCombined(int passengerId){
          int count=0;
          for(Map.Entry<Integer,List<Integer>> entry : bookedTickedDB.entrySet()){
              if(entry.getValue()!=null && entry.getValue().contains(passengerId)){
