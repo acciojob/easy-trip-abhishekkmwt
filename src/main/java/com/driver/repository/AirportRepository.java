@@ -72,25 +72,24 @@ public class AirportRepository {
     }
 
     public String bookATicket(Integer flightId, Integer passengerId){
-        int maxCapacity=0;
         if(flightDB.containsKey(flightId)){
-            maxCapacity=flightDB.get(flightId).getMaxCapacity();
+            int maxCapacity=flightDB.get(flightId).getMaxCapacity();
+            List<Integer> passengers=bookedTickedDB.get(flightId);
+            if(bookedTickedDB.get(flightId) == null){
+                passengers=new ArrayList<>();
+            }
+            if(bookedTickedDB.get(flightId).size() < maxCapacity){
+                if(bookedTickedDB.get(flightId).contains(passengerId)){
+                    return "FAILURE";
+                }
+                else{
+                    passengers.add(passengerId);
+                }
+                bookedTickedDB.put(flightId,passengers);
+                return "SUCCESS";
+            }
         }
-        List<Integer> passengers=bookedTickedDB.get(flightId);
-        if(bookedTickedDB.get(flightId) == null){
-            passengers=new ArrayList<>();
-        }
-         if(bookedTickedDB.get(flightId).size() < maxCapacity){
-             if(bookedTickedDB.get(flightId).contains(passengerId)){
-                 return "FAILURE";
-             }
-             else{
-                 passengers.add(passengerId);
-             }
-             bookedTickedDB.put(flightId,passengers);
-             return "SUCCESS";
-         }
-         return "FAILURE";
+        return "FAILURE";
     }
 
     public int getNumberOfPeopleOn(Date date, String airportName){
@@ -112,17 +111,20 @@ public class AirportRepository {
     }
 
     public int calculateFlightFare(Integer flightId){
-        int noOfPeopleWhoHaveAlreadyBooked =0;
-        if(bookedTickedDB.get(flightId) != null){
-            noOfPeopleWhoHaveAlreadyBooked = bookedTickedDB.get(flightId).size();
+        int price=0;
+        if(bookedTickedDB.containsKey(flightId)){
+            int noOfPeopleWhoHaveAlreadyBooked =0;
+            if(bookedTickedDB.get(flightId) != null){
+                noOfPeopleWhoHaveAlreadyBooked = bookedTickedDB.get(flightId).size();
+            }
+            price= 3000 + (noOfPeopleWhoHaveAlreadyBooked*50);
         }
-        int price= 3000 + (noOfPeopleWhoHaveAlreadyBooked*50);
         return price;
     }
 
     public String cancelATicket(Integer flightId, Integer passengerId){
-        if(flightDB.containsKey(flightId)) {
-            if(bookedTickedDB.containsKey(flightId) && bookedTickedDB.get(flightId)!=null && bookedTickedDB.get(flightId).contains(passengerId)){
+        if(bookedTickedDB.containsKey(flightId)) {
+            if(bookedTickedDB.get(flightId)!=null && bookedTickedDB.get(flightId).contains(passengerId)){
                 bookedTickedDB.get(flightId).remove(passengerId);
                 return "SUCCESS";
             }
@@ -141,13 +143,15 @@ public class AirportRepository {
     }
 
     public int calculateRevenueOfAFlight(Integer flightId){
-        int totalPassengersBooked = 0;
-        if(bookedTickedDB.get(flightId)!=null){
-            totalPassengersBooked=bookedTickedDB.get(flightId).size();
-        }
         int revenue =0;
-        for(int i=0;i<totalPassengersBooked;i++){
-            revenue+=50*(60+i);
+        if(bookedTickedDB.containsKey(flightId)){
+            int totalPassengersBooked = 0;
+            if(bookedTickedDB.get(flightId)!=null){
+                totalPassengersBooked=bookedTickedDB.get(flightId).size();
+            }
+            for(int i=0;i<totalPassengersBooked;i++){
+                revenue+=50*(60+i);
+            }
         }
         return revenue;
     }
