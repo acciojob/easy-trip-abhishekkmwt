@@ -52,7 +52,7 @@ public class AirportService {
         return airportRepository.countOfBookingsDoneByPassengerAllCombined(passengerId);
     }
 
-    public int calculateRevenueOfAFlight(Integer flightId){
+    public int calculateRevenueOfAFlight(int flightId){
         return airportRepository.calculateRevenueOfAFlight(flightId);
     }
 

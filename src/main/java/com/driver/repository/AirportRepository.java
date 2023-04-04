@@ -142,15 +142,14 @@ public class AirportRepository {
          return count;
     }
 
-    public int calculateRevenueOfAFlight(Integer flightId){
+    public int calculateRevenueOfAFlight(int flightId){
         int revenue =0;
         if(bookedTickedDB.containsKey(flightId)){
-            int totalPassengersBooked = 0;
             if(bookedTickedDB.get(flightId)!=null){
-                totalPassengersBooked=bookedTickedDB.get(flightId).size();
-            }
-            for(int i=0;i<totalPassengersBooked;i++){
-                revenue+=50*(60+i);
+                int totalPassengersBooked=bookedTickedDB.get(flightId).size();
+                for(int i=0;i<totalPassengersBooked;i++){
+                    revenue+=50*(60+i);
+                }
             }
         }
         return revenue;
